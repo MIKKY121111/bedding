@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>床品价格计算器 V2.0</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f0f0;
+            padding: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .radio-group label, .checkbox-group label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0;
+        }
+        
+        .radio-group input, .checkbox-group input {
+            margin-right: 8px;
+        }
+        
+        input[type="number"] {
+            width: 120px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin: 20px 0;
+        }
+        
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: #F44336;
+            color: white;
+        }
+        
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+        }
+        
+        .result-table th, .result-table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .usd-price {
+            background-color: #E3F2FD;
+            padding: 16px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .usd-price-label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1565C0;
+        }
+        
+        .usd-price-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1565C0;
+        }
+        
+        .footer {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* 响应式布局 */
+        @media (max-width: 600px) {
+            .radio-group, .checkbox-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>床品价格计算器 V2.0</h1>
+    </div>
+    
+    <div class="card">
+        <h2 class="card-title">产品类型</h2>
+        <div class="form-group">
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="productType" value="suite" checked> 套件
+                </label>
+                <label>
+                    <input type="radio" name="productType" value="quilt" disabled> 被子 (开发中)
+                </label>
+            </div>
+        </div>
+    </div>
+    
+    <div id="suiteOptions">
+        <div class="card">
+            <h2 class="card-title">尺寸选择</h2>
+            <div class="form-group">
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="size" value="KING"> KING
+                    </label>
+                    <label>
+                        <input type="radio" name="size" value="QUEEN"> QUEEN
+                    </label>
+                    <label>
+                        <input type="radio" name="size" value="DOUBLE" checked> DOUBLE
+                    </label>
+                    <label>
+                        <input type="radio" name="size" value="SINGLE"> SINGLE
+                    </label>
+                </div>
+            </div>
+            
+            <h3 style="margin-top: 16px; margin-bottom: 8px;">组件选择</h3>
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" id="checkSheet" checked> 床单
+                    </label>
+                    <label>
+                        <input type="checkbox" id="checkQuiltCover" checked> 被套
+                    </label>
+                    <label>
+                        <input type="checkbox" id="checkPillow" checked> 枕套
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>计算的面料米数: <span id="fabricMeter">0.0</span></label>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 class="card-title">面料价格</h2>
+            <div class="form-group">
+                <label>面料单价 (元/米):</label>
+                <input type="number" id="fabricPrice" min="0" step="0.01" value="0">
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 class="card-title">做工价格</h2>
+            <div class="form-group">
+                <label>枕套做工价格:</label>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="pillowCraft" value="0" checked> 0元
+                    </label>
+                    <label>
+                        <input type="radio" name="pillowCraft" value="5"> 5元
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>床单做工价格:</label>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="sheetCraft" value="0" checked> 0元
+                    </label>
+                    <label>
+                        <input type="radio" name="sheetCraft" value="5"> 5元
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>被套做工价格:</label>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="quiltCraft" value="0" checked> 0元
+                    </label>
+                    <label>
+                        <input type="radio" name="quiltCraft" value="5"> 5元
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 class="card-title">包装价格</h2>
+            <div class="form-group">
+                <label>包装类型:</label>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="packageType" value="none" checked> 无包装(0元)
+                    </label>
+                    <label>
+                        <input type="radio" name="packageType" value="opp"> OPP(2元)
+                    </label>
+                    <label>
+                        <input type="radio" name="packageType" value="pvc"> PVC袋(10元)
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 class="card-title">利润系数</h2>
+            <div class="form-group">
+                <label>选择利润系数:</label>
+                <select id="profitFactor">
+                    <option value="1.15">1.15</option>
+                    <option value="1.2">1.2</option>
+                    <option value="1.3">1.3</option>
+                    <option value="1.5">1.5</option>
+                    <option value="1.8">1.8</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <div class="btn-group">
+        <button id="calculateBtn" class="btn btn-primary">计算价格</button>
+        <button id="clearBtn" class="btn btn-danger">清空</button>
+    </div>
+    
+    <div class="card">
+        <h2 class="card-title">计算结果</h2>
+        <table class="result-table" id="resultTable">
+            <thead>
+                <tr>
+                    <th>项目</th>
+                    <th>金额 (元)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 结果将通过JavaScript动态添加 -->
+            </tbody>
+        </table>
+        
+        <div class="usd-price">
+            <span class="usd-price-label">美金价格 (USD):</span>
+            <span class="usd-price-value">$<span id="usdPrice">0.00</span></span>
+        </div>
+    </div>
+    
+    <div class="footer">
+        © 2025 床品价格计算器 V2.0
+    </div>
+    
+    <script>
+        // 尺寸对应的米数
+        const sizeMeterMap = {
+            "KING": { "床单米数": 2.7, "被套米数": 5.0 },
+            "QUEEN": { "床单米数": 2.5, "被套米数": 4.0 },
+            "DOUBLE": { "床单米数": 2.3, "被套米数": 3.6 },
+            "SINGLE": { "床单米数": 1.6, "被套米数": 2.0 }
+        };
+        
+        // 枕套米数固定为1
+        const pillowMeter = 1.0;
+        
+        // 获取DOM元素
+        const sizeRadios = document.querySelectorAll('input[name="size"]');
+        const checkSheet = document.getElementById('checkSheet');
+        const checkQuiltCover = document.getElementById('checkQuiltCover');
+        const checkPillow = document.getElementById('checkPillow');
+        const fabricMeterSpan = document.getElementById('fabricMeter');
+        const fabricPriceInput = document.getElementById('fabricPrice');
+        const profitFactorSelect = document.getElementById('profitFactor');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const resultTableBody = document.querySelector('#resultTable tbody');
+        const usdPriceSpan = document.getElementById('usdPrice');
+        
+        // 更新面料米数的函数
+        function updateFabricMeter() {
+            // 获取选中的尺寸
+            let selectedSize = "";
+            for (const radio of sizeRadios) {
+                if (radio.checked) {
+                    selectedSize = radio.value;
+                    break;
+                }
+            }
+            
+            // 计算总米数
+            let totalMeter = 0;
+            
+            if (checkSheet.checked) {
+                totalMeter += sizeMeterMap[selectedSize]["床单米数"];
+            }
+            
+            if (checkQuiltCover.checked) {
+                totalMeter += sizeMeterMap[selectedSize]["被套米数"];
+            }
+            
+            if (checkPillow.checked) {
+                totalMeter += pillowMeter;
+            }
+            
+            // 更新显示
+            fabricMeterSpan.textContent = totalMeter.toFixed(1);
+        }
+        
+        // 添加事件监听器
+        for (const radio of sizeRadios) {
+            radio.addEventListener('change', updateFabricMeter);
+        }
+        
+        checkSheet.addEventListener('change', updateFabricMeter);
+        checkQuiltCover.addEventListener('change', updateFabricMeter);
+        checkPillow.addEventListener('change', updateFabricMeter);
+        
+        // 产品类型变更监听
+        const productTypeRadios = document.querySelectorAll('input[name="productType"]');
+        for (const radio of productTypeRadios) {
+            radio.addEventListener('change', function() {
+                if (this.value === 'quilt') {
+                    alert('被子产品计算功能正在开发中，敬请期待！');
+                    productTypeRadios[0].checked = true;
+                }
+            });
+        }
+        
+        // 计算价格
+        calculateBtn.addEventListener('click', function() {
+            try {
+                // 清空结果表格
+                resultTableBody.innerHTML = '';
+                
+                // 获取当前选中的尺寸
+                let selectedSize = "";
+                for (const radio of sizeRadios) {
+                    if (radio.checked) {
+                        selectedSize = radio.value;
+                        break;
+                    }
+                }
+                
+                // 获取面料单价
+                const fabricUnitPrice = parseFloat(fabricPriceInput.value) || 0;
+                
+                // 计算面料总米数
+                let totalMeter = 0;
+                if (checkSheet.checked) {
+                    totalMeter += sizeMeterMap[selectedSize]["床单米数"];
+                }
+                if (checkQuiltCover.checked) {
+                    totalMeter += sizeMeterMap[selectedSize]["被套米数"];
+                }
+                if (checkPillow.checked) {
+                    totalMeter += pillowMeter;
+                }
+                
+                // 1. 计算面料价格
+                const fabricPrice = fabricUnitPrice * totalMeter;
+                addResultRow("面料价格", fabricPrice.toFixed(2));
+                
+                // 2. 计算做工价格
+                let craftPrice = 0;
+                if (checkPillow.checked) {
+                    const pillowCraftValue = document.querySelector('input[name="pillowCraft"]:checked').value;
+                    craftPrice += parseInt(pillowCraftValue);
+                }
+                if (checkSheet.checked) {
+                    const sheetCraftValue = document.querySelector('input[name="sheetCraft"]:checked').value;
+                    craftPrice += parseInt(sheetCraftValue);
+                }
+                if (checkQuiltCover.checked) {
+                    const quiltCraftValue = document.querySelector('input[name="quiltCraft"]:checked').value;
+                    craftPrice += parseInt(quiltCraftValue);
+                }
+                addResultRow("做工价格", craftPrice.toFixed(2));
+                
+                // 3. 计算包装价格
+                let packagePrice = 0;
+                const packageType = document.querySelector('input[name="packageType"]:checked').value;
+                if (packageType === 'opp') {
+                    packagePrice = 2;
+                } else if (packageType === 'pvc') {
+                    packagePrice = 10;
+                }
+                addResultRow("包装价格", packagePrice.toFixed(2));
+                
+                // 4. 计算利润前总价
+                const subtotal = fabricPrice + craftPrice + packagePrice;
+                addResultRow("成本小计", subtotal.toFixed(2));
+                
+                // 5. 计算最终价格
+                const profitFactor = parseFloat(profitFactorSelect.value);
+                const finalPrice = subtotal * profitFactor;
+                addResultRow(`最终价格 (利润系数: ${profitFactor})`, finalPrice.toFixed(2));
+                
+                // 6. 计算美金价格
+                const usdPrice = finalPrice / 7.2;
+                addResultRow("美金价格 (USD)", usdPrice.toFixed(2));
+                
+                // 更新美金价格显示
+                usdPriceSpan.textContent = usdPrice.toFixed(2);
+                
+                // 7. 添加面料米数明细
+                const meterDetails = [];
+                if (checkSheet.checked) {
+                    meterDetails.push(`床单(${sizeMeterMap[selectedSize]["床单米数"]}米)`);
+                }
+                if (checkQuiltCover.checked) {
+                    meterDetails.push(`被套(${sizeMeterMap[selectedSize]["被套米数"]}米)`);
+                }
+                if (checkPillow.checked) {
+                    meterDetails.push(`枕套(${pillowMeter}米)`);
+                }
+                
+                const meterDetailStr = meterDetails.join(" + ");
+                addResultRow("面料米数明细", meterDetailStr);
+                
+            } catch (e) {
+                alert(`计算错误：${e.message}\n请检查输入值是否正确。`);
+            }
+        });
+        
+        // 清空按钮事件
+        clearBtn.addEventListener('click', function() {
+            fabricPriceInput.value = 0;
+            document.querySelector('input[name="pillowCraft"][value="0"]').checked = true;
+            document.querySelector('input[name="sheetCraft"][value="0"]').checked = true;
+            document.querySelector('input[name="quiltCraft"][value="0"]').checked = true;
+            document.querySelector('input[name="packageType"][value="none"]').checked = true;
+            profitFactorSelect.value = "1.15";
+            
+            // 清空结果
+            resultTableBody.innerHTML = '';
+            usdPriceSpan.textContent = "0.00";
+        });
+        
+        // 添加结果行到表格
+        function addResultRow(item, value) {
+            const row = document.createElement('tr');
+            const itemCell = document.createElement('td');
+            const valueCell = document.createElement('td');
+            
+            itemCell.textContent = item;
+            valueCell.textContent = value;
+            
+            row.appendChild(itemCell);
+            row.appendChild(valueCell);
+            resultTableBody.appendChild(row);
+        }
+        
+        // 初始化面料米数
+        updateFabricMeter();
+    </script>
+</body>
+</html>
