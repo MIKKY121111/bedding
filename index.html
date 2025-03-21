@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>床品价格计算器 V2.0</title>
+    <title>床品价格计算器 V3.0</title>
     <style>
         * {
             box-sizing: border-box;
@@ -165,11 +165,28 @@
                 width: 100%;
             }
         }
+
+        /* 优化：针对禁用的表单元素进行样式调整 */
+        .form-group.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        /* 禁用的单选按钮样式 */
+        .form-group.disabled input[type="radio"] {
+            cursor: not-allowed;
+            background-color: #eee;
+        }
+        
+        /* 隐藏禁用的组件做工价格区域 */
+        .craft-section-hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>床品价格计算器 V2.0</h1>
+        <h1>床品价格计算器 V3.0</h1>
     </div>
     
     <div class="card">
@@ -236,38 +253,29 @@
         
         <div class="card">
             <h2 class="card-title">做工价格</h2>
-            <div class="form-group">
+            <div class="form-group" id="pillowCraftGroup">
                 <label>枕套做工价格:</label>
                 <div class="radio-group">
                     <label>
-                        <input type="radio" name="pillowCraft" value="0" checked> 0元
-                    </label>
-                    <label>
-                        <input type="radio" name="pillowCraft" value="5"> 5元
+                        <input type="radio" name="pillowCraft" value="5" checked> 5元
                     </label>
                 </div>
             </div>
             
-            <div class="form-group">
+            <div class="form-group" id="sheetCraftGroup">
                 <label>床单做工价格:</label>
                 <div class="radio-group">
                     <label>
-                        <input type="radio" name="sheetCraft" value="0" checked> 0元
-                    </label>
-                    <label>
-                        <input type="radio" name="sheetCraft" value="5"> 5元
+                        <input type="radio" name="sheetCraft" value="5" checked> 5元
                     </label>
                 </div>
             </div>
             
-            <div class="form-group">
+            <div class="form-group" id="quiltCraftGroup">
                 <label>被套做工价格:</label>
                 <div class="radio-group">
                     <label>
-                        <input type="radio" name="quiltCraft" value="0" checked> 0元
-                    </label>
-                    <label>
-                        <input type="radio" name="quiltCraft" value="5"> 5元
+                        <input type="radio" name="quiltCraft" value="5" checked> 5元
                     </label>
                 </div>
             </div>
@@ -327,12 +335,12 @@
         
         <div class="usd-price">
             <span class="usd-price-label">美金价格 (USD):</span>
-            <span class="usd-price-value">$<span id="usdPrice">0.00</span></span>
+            <span class="usd-price-value">$<span id="usdPriceBlue">0.00</span></span>
         </div>
     </div>
     
     <div class="footer">
-        © 2025 床品价格计算器 V2.0
+        © 2025 床品价格计算器 V3.0
     </div>
     
     <script>
@@ -359,6 +367,12 @@
         const clearBtn = document.getElementById('clearBtn');
         const resultTableBody = document.querySelector('#resultTable tbody');
         const usdPriceSpan = document.getElementById('usdPrice');
+        const usdPriceBlue = document.getElementById('usdPriceBlue');
+        
+        // 做工价格相关DOM元素
+        const pillowCraftGroup = document.getElementById('pillowCraftGroup');
+        const sheetCraftGroup = document.getElementById('sheetCraftGroup');
+        const quiltCraftGroup = document.getElementById('quiltCraftGroup');
         
         // 更新面料米数的函数
         function updateFabricMeter() {
@@ -390,14 +404,86 @@
             fabricMeterSpan.textContent = totalMeter.toFixed(1);
         }
         
+        // 优化：根据组件选择更新做工价格区域的函数
+        function updateCraftPriceVisibility() {
+            // 根据枕套选择状态更新
+            if (checkPillow.checked) {
+                // 显示且启用枕套做工价格区域
+                pillowCraftGroup.classList.remove('disabled');
+                pillowCraftGroup.classList.remove('craft-section-hidden');
+                // 启用所有枕套做工价格的单选按钮
+                document.querySelectorAll('input[name="pillowCraft"]').forEach(radio => {
+                    radio.disabled = false;
+                });
+            } else {
+                // 禁用且隐藏枕套做工价格区域
+                pillowCraftGroup.classList.add('disabled');
+                pillowCraftGroup.classList.add('craft-section-hidden');
+                // 禁用所有枕套做工价格的单选按钮
+                document.querySelectorAll('input[name="pillowCraft"]').forEach(radio => {
+                    radio.disabled = true;
+                });
+            }
+            
+            // 根据床单选择状态更新
+            if (checkSheet.checked) {
+                // 显示且启用床单做工价格区域
+                sheetCraftGroup.classList.remove('disabled');
+                sheetCraftGroup.classList.remove('craft-section-hidden');
+                // 启用所有床单做工价格的单选按钮
+                document.querySelectorAll('input[name="sheetCraft"]').forEach(radio => {
+                    radio.disabled = false;
+                });
+            } else {
+                // 禁用且隐藏床单做工价格区域
+                sheetCraftGroup.classList.add('disabled');
+                sheetCraftGroup.classList.add('craft-section-hidden');
+                // 禁用所有床单做工价格的单选按钮
+                document.querySelectorAll('input[name="sheetCraft"]').forEach(radio => {
+                    radio.disabled = true;
+                });
+            }
+            
+            // 根据被套选择状态更新
+            if (checkQuiltCover.checked) {
+                // 显示且启用被套做工价格区域
+                quiltCraftGroup.classList.remove('disabled');
+                quiltCraftGroup.classList.remove('craft-section-hidden');
+                // 启用所有被套做工价格的单选按钮
+                document.querySelectorAll('input[name="quiltCraft"]').forEach(radio => {
+                    radio.disabled = false;
+                });
+            } else {
+                // 禁用且隐藏被套做工价格区域
+                quiltCraftGroup.classList.add('disabled');
+                quiltCraftGroup.classList.add('craft-section-hidden');
+                // 禁用所有被套做工价格的单选按钮
+                document.querySelectorAll('input[name="quiltCraft"]').forEach(radio => {
+                    radio.disabled = true;
+                });
+            }
+        }
+        
         // 添加事件监听器
         for (const radio of sizeRadios) {
             radio.addEventListener('change', updateFabricMeter);
         }
         
-        checkSheet.addEventListener('change', updateFabricMeter);
-        checkQuiltCover.addEventListener('change', updateFabricMeter);
-        checkPillow.addEventListener('change', updateFabricMeter);
+        // 组件选择变更监听
+        checkSheet.addEventListener('change', function() {
+            updateFabricMeter();
+            updateCraftPriceVisibility();
+        });
+        
+        checkQuiltCover.addEventListener('change', function() {
+            updateFabricMeter();
+            updateCraftPriceVisibility();
+        });
+        
+        checkPillow.addEventListener('change', function() {
+            updateFabricMeter();
+            updateCraftPriceVisibility();
+        });
         
         // 产品类型变更监听
         const productTypeRadios = document.querySelectorAll('input[name="productType"]');
@@ -446,17 +532,15 @@
                 
                 // 2. 计算做工价格
                 let craftPrice = 0;
+                // 如果组件被选中，则做工价格为5元，否则为0元
                 if (checkPillow.checked) {
-                    const pillowCraftValue = document.querySelector('input[name="pillowCraft"]:checked').value;
-                    craftPrice += parseInt(pillowCraftValue);
+                    craftPrice += 5;
                 }
                 if (checkSheet.checked) {
-                    const sheetCraftValue = document.querySelector('input[name="sheetCraft"]:checked').value;
-                    craftPrice += parseInt(sheetCraftValue);
+                    craftPrice += 5;
                 }
                 if (checkQuiltCover.checked) {
-                    const quiltCraftValue = document.querySelector('input[name="quiltCraft"]:checked').value;
-                    craftPrice += parseInt(quiltCraftValue);
+                    craftPrice += 5;
                 }
                 addResultRow("做工价格", craftPrice.toFixed(2));
                 
@@ -483,8 +567,8 @@
                 const usdPrice = finalPrice / 7.2;
                 addResultRow("美金价格 (USD)", usdPrice.toFixed(2));
                 
-                // 更新美金价格显示
-                usdPriceSpan.textContent = usdPrice.toFixed(2);
+                // 更新蓝色区域的美金价格显示
+                document.getElementById('usdPriceBlue').textContent = usdPrice.toFixed(2);
                 
                 // 7. 添加面料米数明细
                 const meterDetails = [];
@@ -509,15 +593,16 @@
         // 清空按钮事件
         clearBtn.addEventListener('click', function() {
             fabricPriceInput.value = 0;
-            document.querySelector('input[name="pillowCraft"][value="0"]').checked = true;
-            document.querySelector('input[name="sheetCraft"][value="0"]').checked = true;
-            document.querySelector('input[name="quiltCraft"][value="0"]').checked = true;
+            
+            // 不再需要重置做工价格的单选按钮，因为现在只有一个选项
+            
             document.querySelector('input[name="packageType"][value="none"]').checked = true;
             profitFactorSelect.value = "1.15";
             
             // 清空结果
             resultTableBody.innerHTML = '';
-            usdPriceSpan.textContent = "0.00";
+            // 同时清空蓝色区域的美金价格显示
+            document.getElementById('usdPriceBlue').textContent = "0.00";
         });
         
         // 添加结果行到表格
@@ -534,8 +619,9 @@
             resultTableBody.appendChild(row);
         }
         
-        // 初始化面料米数
+        // 初始化面料米数和做工价格显示
         updateFabricMeter();
+        updateCraftPriceVisibility();
     </script>
 </body>
 </html>
