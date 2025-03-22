@@ -9,152 +9,389 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        :root {
+            --primary-color: #8A2BE2;
+            --primary-dark: #7126BD;
+            --secondary-color: #F5F5F7;
+            --accent-color: #8A2BE2;
+            --text-color: #333;
+            --text-light: #666;
+            --border-radius: 16px;
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --transition-speed: 0.3s;
+            --inner-border: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
         }
         
         body {
-            background-color: #f0f0f0;
-            padding: 16px;
+            background-color: #f8f9fa;
+            background-image: linear-gradient(135deg, #f0f2f5 0%, #f8f9fa 100%);
+            padding: 24px;
             max-width: 800px;
             margin: 0 auto;
+            color: var(--text-color);
+            line-height: 1.5;
         }
         
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 32px;
+            padding-top: 16px;
         }
         
         .header h1 {
-            font-size: 24px;
-            margin-bottom: 8px;
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            background: linear-gradient(90deg, var(--primary-color), #B266FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
+        /* Frosted Glass Card */
         .card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 16px;
-            margin-bottom: 16px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow), var(--inner-border);
+            padding: 28px;
+            margin-bottom: 24px;
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1), var(--inner-border);
         }
         
         .card-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 16px;
-            color: #333;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .card-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), #B266FF);
+            border-radius: 3px;
         }
         
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .form-group:last-child {
+            margin-bottom: 0;
         }
         
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            font-weight: 500;
+            color: #444;
         }
         
         .radio-group, .checkbox-group {
             display: flex;
             flex-wrap: wrap;
             gap: 16px;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
         
-        .radio-group label, .checkbox-group label {
+        /* Custom Radio & Checkbox Styling */
+        .radio-label, .checkbox-label {
             display: flex;
             align-items: center;
+            cursor: pointer;
+            position: relative;
             margin-bottom: 0;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            transition: all var(--transition-speed);
+            user-select: none;
         }
         
-        .radio-group input, .checkbox-group input {
-            margin-right: 8px;
+        .radio-label:hover, .checkbox-label:hover {
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            transform: translateY(-1px);
         }
         
-        input[type="number"] {
-            width: 120px;
-            padding: 8px;
-            border: 1px solid #ddd;
+        .radio-label input, .checkbox-label input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .radio-label span, .checkbox-label span {
+            position: relative;
+            padding-left: 28px;
+        }
+        
+        .radio-label span:before, .checkbox-label span:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            background: white;
+            transition: all 0.2s ease;
+        }
+        
+        .radio-label span:before {
+            border-radius: 50%;
+        }
+        
+        .checkbox-label span:before {
             border-radius: 4px;
+        }
+        
+        .radio-label input:checked + span:before,
+        .checkbox-label input:checked + span:before {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .radio-label input:checked + span:after {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 7px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: white;
+        }
+        
+        .checkbox-label input:checked + span:after {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 3px;
+            width: 6px;
+            height: 12px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        
+        .radio-label input:disabled + span,
+        .checkbox-label input:disabled + span {
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .radio-label input:disabled + span:before,
+        .checkbox-label input:disabled + span:before {
+            background-color: #f2f2f2;
+            border-color: #ddd;
+        }
+        
+        /* Input Styling */
+        input[type="number"], select {
+            width: 140px;
+            padding: 12px 16px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: all var(--transition-speed);
+        }
+        
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2);
         }
         
         select {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23444' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 36px;
         }
         
         .btn-group {
             display: flex;
             justify-content: center;
             gap: 16px;
-            margin: 20px 0;
+            margin: 32px 0;
         }
         
         .btn {
-            padding: 10px 24px;
+            padding: 14px 28px;
             border: none;
-            border-radius: 4px;
+            border-radius: 50px;
             font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
+            transition: all var(--transition-speed);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:active {
+            transform: scale(0.96);
         }
         
         .btn-primary {
-            background-color: #4CAF50;
+            background: linear-gradient(135deg, var(--primary-color), #B266FF);
             color: white;
         }
         
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(138, 43, 226, 0.3);
+        }
+        
         .btn-danger {
-            background-color: #F44336;
-            color: white;
+            background: #f8f9fa;
+            color: #E53935;
+            border: 1px solid rgba(229, 57, 53, 0.3);
+        }
+        
+        .btn-danger:hover {
+            background: rgba(229, 57, 53, 0.05);
+            box-shadow: 0 6px 20px rgba(229, 57, 53, 0.15);
+        }
+        
+        /* Button Animation */
+        .btn:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        
+        .btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            20% {
+                transform: scale(25, 25);
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 0;
+                transform: scale(40, 40);
+            }
         }
         
         .result-table {
             width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 16px;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 24px;
         }
         
         .result-table th, .result-table td {
-            padding: 8px;
+            padding: 16px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+        }
+        
+        .result-table th {
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        
+        .result-table td {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-table tr:last-child td {
+            border-bottom: none;
         }
         
         .usd-price {
-            background-color: #E3F2FD;
-            padding: 16px;
-            border-radius: 4px;
+            background: linear-gradient(135deg, #E1F5FE, #E3F2FD);
+            padding: 24px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin-top: 24px;
+            box-shadow: 0 4px 15px rgba(3, 169, 244, 0.1);
+            animation: subtle-float 3s ease-in-out infinite;
+        }
+        
+        @keyframes subtle-float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
         }
         
         .usd-price-label {
-            font-size: 16px;
-            font-weight: bold;
-            color: #1565C0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #0277BD;
         }
         
         .usd-price-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #1565C0;
+            font-size: 32px;
+            font-weight: 700;
+            color: #0277BD;
         }
         
         .footer {
             text-align: right;
-            margin-top: 20px;
-            font-size: 12px;
-            color: #666;
+            margin-top: 32px;
+            padding: 16px 0;
+            font-size: 14px;
+            color: var(--text-light);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
         }
         
         /* 响应式布局 */
         @media (max-width: 600px) {
+            body {
+                padding: 16px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
             .radio-group, .checkbox-group {
                 flex-direction: column;
-                gap: 8px;
+                gap: 10px;
             }
             
             .btn-group {
@@ -164,23 +401,81 @@
             .btn {
                 width: 100%;
             }
+            
+            .usd-price {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+
+        /* Typography Enhancements */
+        h2, h3 {
+            font-weight: 600;
+        }
+        
+        h3 {
+            font-size: 18px;
+            margin-top: 24px;
+            margin-bottom: 16px;
+            color: #555;
+        }
+        
+        /* Fabric Meter Display */
+        .fabric-meter-display {
+            background: linear-gradient(135deg, #F3E5F5, #EDE7F6);
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .fabric-meter-label {
+            font-weight: 500;
+            color: #7B1FA2;
+        }
+        
+        .fabric-meter-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #7B1FA2;
+            padding: 6px 16px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 20px;
         }
 
         /* 优化：针对禁用的表单元素进行样式调整 */
         .form-group.disabled {
-            opacity: 0.5;
+            opacity: 0.6;
             pointer-events: none;
-        }
-        
-        /* 禁用的单选按钮样式 */
-        .form-group.disabled input[type="radio"] {
-            cursor: not-allowed;
-            background-color: #eee;
         }
         
         /* 隐藏禁用的组件做工价格区域 */
         .craft-section-hidden {
             display: none;
+        }
+        
+        /* Section Title Styling */
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 24px;
+            margin-bottom: 16px;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title:before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 18px;
+            background: linear-gradient(to bottom, var(--primary-color), #B266FF);
+            border-radius: 3px;
         }
     </style>
 </head>
@@ -193,11 +488,13 @@
         <h2 class="card-title">产品类型</h2>
         <div class="form-group">
             <div class="radio-group">
-                <label>
-                    <input type="radio" name="productType" value="suite" checked> 套件
+                <label class="radio-label">
+                    <input type="radio" name="productType" value="suite" checked>
+                    <span>套件</span>
                 </label>
-                <label>
-                    <input type="radio" name="productType" value="quilt" disabled> 被子 (开发中)
+                <label class="radio-label">
+                    <input type="radio" name="productType" value="quilt" disabled>
+                    <span>被子 (开发中)</span>
                 </label>
             </div>
         </div>
@@ -208,38 +505,46 @@
             <h2 class="card-title">尺寸选择</h2>
             <div class="form-group">
                 <div class="radio-group">
-                    <label>
-                        <input type="radio" name="size" value="KING"> KING
+                    <label class="radio-label">
+                        <input type="radio" name="size" value="KING">
+                        <span>KING</span>
                     </label>
-                    <label>
-                        <input type="radio" name="size" value="QUEEN"> QUEEN
+                    <label class="radio-label">
+                        <input type="radio" name="size" value="QUEEN">
+                        <span>QUEEN</span>
                     </label>
-                    <label>
-                        <input type="radio" name="size" value="DOUBLE" checked> DOUBLE
+                    <label class="radio-label">
+                        <input type="radio" name="size" value="DOUBLE" checked>
+                        <span>DOUBLE</span>
                     </label>
-                    <label>
-                        <input type="radio" name="size" value="SINGLE"> SINGLE
+                    <label class="radio-label">
+                        <input type="radio" name="size" value="SINGLE">
+                        <span>SINGLE</span>
                     </label>
                 </div>
             </div>
             
-            <h3 style="margin-top: 16px; margin-bottom: 8px;">组件选择</h3>
+            <div class="section-title">组件选择</div>
             <div class="form-group">
                 <div class="checkbox-group">
-                    <label>
-                        <input type="checkbox" id="checkSheet" checked> 床单
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="checkSheet" checked>
+                        <span>床单</span>
                     </label>
-                    <label>
-                        <input type="checkbox" id="checkQuiltCover" checked> 被套
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="checkQuiltCover" checked>
+                        <span>被套</span>
                     </label>
-                    <label>
-                        <input type="checkbox" id="checkPillow" checked> 枕套
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="checkPillow" checked>
+                        <span>枕套</span>
                     </label>
                 </div>
             </div>
             
-            <div class="form-group">
-                <label>计算的面料米数: <span id="fabricMeter">0.0</span></label>
+            <div class="fabric-meter-display">
+                <span class="fabric-meter-label">计算的面料米数:</span>
+                <span class="fabric-meter-value"><span id="fabricMeter">0.0</span>米</span>
             </div>
         </div>
         
@@ -256,8 +561,9 @@
             <div class="form-group" id="pillowCraftGroup">
                 <label>枕套做工价格:</label>
                 <div class="radio-group">
-                    <label>
-                        <input type="radio" name="pillowCraft" value="5" checked> 5元
+                    <label class="radio-label">
+                        <input type="radio" name="pillowCraft" value="5" checked>
+                        <span>5元</span>
                     </label>
                 </div>
             </div>
@@ -265,8 +571,9 @@
             <div class="form-group" id="sheetCraftGroup">
                 <label>床单做工价格:</label>
                 <div class="radio-group">
-                    <label>
-                        <input type="radio" name="sheetCraft" value="5" checked> 5元
+                    <label class="radio-label">
+                        <input type="radio" name="sheetCraft" value="5" checked>
+                        <span>5元</span>
                     </label>
                 </div>
             </div>
@@ -274,8 +581,9 @@
             <div class="form-group" id="quiltCraftGroup">
                 <label>被套做工价格:</label>
                 <div class="radio-group">
-                    <label>
-                        <input type="radio" name="quiltCraft" value="5" checked> 5元
+                    <label class="radio-label">
+                        <input type="radio" name="quiltCraft" value="5" checked>
+                        <span>5元</span>
                     </label>
                 </div>
             </div>
@@ -286,14 +594,17 @@
             <div class="form-group">
                 <label>包装类型:</label>
                 <div class="radio-group">
-                    <label>
-                        <input type="radio" name="packageType" value="none" checked> 无包装(0元)
+                    <label class="radio-label">
+                        <input type="radio" name="packageType" value="none" checked>
+                        <span>无包装(0元)</span>
                     </label>
-                    <label>
-                        <input type="radio" name="packageType" value="opp"> OPP(2元)
+                    <label class="radio-label">
+                        <input type="radio" name="packageType" value="opp">
+                        <span>OPP(2元)</span>
                     </label>
-                    <label>
-                        <input type="radio" name="packageType" value="pvc"> PVC袋(10元)
+                    <label class="radio-label">
+                        <input type="radio" name="packageType" value="pvc">
+                        <span>PVC袋(10元)</span>
                     </label>
                 </div>
             </div>
@@ -499,6 +810,13 @@
         // 计算价格
         calculateBtn.addEventListener('click', function() {
             try {
+                // 添加点击效果
+                const btn = this;
+                btn.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    btn.style.transform = 'scale(1)';
+                }, 150);
+                
                 // 清空结果表格
                 resultTableBody.innerHTML = '';
                 
@@ -585,6 +903,11 @@
                 const meterDetailStr = meterDetails.join(" + ");
                 addResultRow("面料米数明细", meterDetailStr);
                 
+                // 添加动画效果，让结果区域滚动到可见
+                document.querySelector('.card:last-of-type').scrollIntoView({
+                    behavior: 'smooth'
+                });
+                
             } catch (e) {
                 alert(`计算错误：${e.message}\n请检查输入值是否正确。`);
             }
@@ -592,6 +915,13 @@
         
         // 清空按钮事件
         clearBtn.addEventListener('click', function() {
+            // 添加点击效果
+            const btn = this;
+            btn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                btn.style.transform = 'scale(1)';
+            }, 150);
+            
             fabricPriceInput.value = 0;
             
             // 不再需要重置做工价格的单选按钮，因为现在只有一个选项
@@ -617,6 +947,14 @@
             row.appendChild(itemCell);
             row.appendChild(valueCell);
             resultTableBody.appendChild(row);
+            
+            // 添加行的淡入效果
+            row.style.opacity = '0';
+            row.style.transition = 'opacity 0.3s ease-in-out';
+            
+            setTimeout(() => {
+                row.style.opacity = '1';
+            }, 50);
         }
         
         // 初始化面料米数和做工价格显示
